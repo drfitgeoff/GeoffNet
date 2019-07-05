@@ -24,8 +24,9 @@ WITH CLR_FINDER AS (
               FROM
                 SH_CLEAN.cp_charges_direct_NEW
               WHERE
-                DT_PAID BETWEEN @YearOI
+                DT_PAID BETWEEN @YearOI 
                 AND DATE_ADD(@YearOI, INTERVAL 1 YEAR)
+                AND CHARGE_TYPE_DESC LIKE "%Premium%"
               UNION ALL
               SELECT
                 PROP_PAID AS AMOUNT_PAID,
@@ -37,6 +38,7 @@ WITH CLR_FINDER AS (
               WHERE
                 DT_PAID BETWEEN @YearOI
                 AND DATE_ADD(@YearOI, INTERVAL 1 YEAR)
+                AND CHARGE_TYPE LIKE "%Premium%"
               UNION ALL
               SELECT
                 PAID_AMOUNT AS AMOUNT_PAID,
@@ -48,6 +50,7 @@ WITH CLR_FINDER AS (
               WHERE
                 POLICY_MONTH_START BETWEEN @YearOI
                 AND DATE_ADD(@YearOI, INTERVAL 1 YEAR)
+                
             ) AS A
             INNER JOIN SH_CLEAN.POLICIES_CONFORMED ON A.POLICY_NO = POLICIES_CONFORMED.POLICY_NO
           WHERE
@@ -65,9 +68,9 @@ WITH CLR_FINDER AS (
 SELECT
   COUNT(*) AS Count,
   AVG(CLR) Avg_CLR,
-  MONTHS_OPEN
+  GENDER
 FROM
   SH_MODEL.LC_MODELLING_SAMPLE_V2 A
   INNER JOIN CLR_FINDER ON A.POLICY_NO = CLR_FINDER.POLICY_NO
 GROUP BY
-  MONTHS_OPEN
+  GENDER
