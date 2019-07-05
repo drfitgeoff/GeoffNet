@@ -25,6 +25,7 @@ WITH CLR_FINDER AS (
                 SH_CLEAN.cp_charges_direct_NEW
               WHERE
                 DT_PAID BETWEEN @YearOI
+                AND CHARGE_TYPE_DESC LIKE "%Premium%"
                 AND DATE_ADD(@YearOI, INTERVAL 1 YEAR)
               UNION ALL
               SELECT
@@ -47,6 +48,7 @@ WITH CLR_FINDER AS (
                 SH_FINAL.CLAIMS_2
               WHERE
                 POLICY_MONTH_START BETWEEN @YearOI
+                AND CHARGE_TYPE LIKE "%Premium%"
                 AND DATE_ADD(@YearOI, INTERVAL 1 YEAR)
             ) AS A
             INNER JOIN SH_CLEAN.POLICIES_CONFORMED ON A.POLICY_NO = POLICIES_CONFORMED.POLICY_NO
